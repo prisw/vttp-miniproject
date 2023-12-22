@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Planner Home Page</title>
+</head>
+
+<body>
+
+    <h1>Planner Home Page</h1>
+    <br><hr>
+    <br>
+    <h3>Welcome <span data-th-value="${username}"></span></h2>
+    <br><br>
+
+    <div class="container">
+        <a th:href="@{/planner/addnew}" class="btn btn-primary">Create New Itinerary</a>
+        <br><br>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Activity</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-th-each="itin: ${itineraries}">
+                    <td data-th-text="*{itin.day}"></td>
+                    <td data-th-text="*{itin.date}"></td>
+                    <td data-th-text="*{itin.location}"></td>
+                    <td data-th-text="*{itin.activity}"></td>
+                    <td data-th-text="*{itin.remarks}"></td>
+                    <td>
+                        <a th:href="@{/planner/plannerupdate/{location}(location=${itin.location})}" class="btn btn-secondary">Update</a>
+                        <a th:href="@{/planner/plannerupdate/{location}(location=${itin.location})}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+    
+</html>

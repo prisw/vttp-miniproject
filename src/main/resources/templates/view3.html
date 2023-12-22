@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Planner Page_UPDATE PAGE</title>
+</head>
+<body>
+    <div class="container">
+        <br>
+        <a th:href="@{/planner/list}" class="btn btn-primary">Back to Planner Home Page</a>
+        <br><br>
+        <h1>Update Itinerary List</h1>
+        <hr>
+        <form method="POST" th:action="@{/planner/updateplanner}" th:object="${itineraries}">
+            <div class="mb-3">
+                <label for="day" class="form-label">Day: </label>
+                <input type="number" class="form-control" name="day" th:field="*{day}" />
+            </div>
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('day')}" th:errors="*{day}"></div>
+
+            <div class="mb-3">
+                <label for="date" class="form-label">Date: </label>
+                <input type="date" class="form-control" name="date" th:field="*{date}" />
+            </div>
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+
+            <div class="mb-3">
+                <label for="location" class="form-label">Location: </label>
+                <input type="text" class="form-control" name="location" th:field="*{location}" />
+            </div>
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
+
+            <div class="mb-3">
+                <label for="activity" class="form-label">Activities: </label>
+                <input type="text" class="form-control" name="activity" th:field="*{activity}" />
+            </div>
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('activity')}" th:errors="*{activity}"></div>
+
+            <div class="mb-3">
+                <label for="remarks" class="form-label">Remarks: </label>
+                <input type="text" class="form-control" name="remarks" th:field="*{remarks}" />
+            </div>
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('remarks')}" th:errors="*{remarks}"></div>
+
+        
+            <button type="submit" class="btn btn-primary">Update List</button>
+        </form>
+
+    </div>
+</body>
+</html>
