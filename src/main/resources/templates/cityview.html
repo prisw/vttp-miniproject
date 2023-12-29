@@ -7,42 +7,21 @@
     <title>RECOMMENDED CITY</title>
 </head>
 <body>
-    <h2>
-
-
-
-
-
-
-        
-        <br>
-        Recommendations for <em><span data-th-text="${city.value}"></span></em>
+    <h2 style="color:darkblue ;"> 
+        Recommendations For The Chosen City
     </h2>
-    <hr>
+    <hr style="color:darkblue ;">
     <div>
-        <button class="btn btn-info" data-th-href="@{/home.html}">Back</button>
+        <button class="btn btn-info" data-th-href="@{/home}">Back</button>
     </div>
-
-    <div data-th-if="${lists.isEmpty(reccs)}">
-        <h4>No Recommendations Available for <em><span data-th-text="${city.value}">.</em>
-        </span>
-        </h4>
-        <h4>Please Choose Another City</h4>
-    </div>
-
-    <div data-th-unless="${lists.isEmpty(reccs)}">
-
-        <div data-th-each="c :${cities}" data-th-object="${c}">
-            <h1 data-th-text="*{name}"></h1>
-            <p data-th-text="*{latitude}"></p>
-            <p data-th-text="*{longitude}"></p>
-            <br>
-        </div> <br>
-        <div>
+ <br>
+            <div data-th-each="c :${cities}" data-th-object="${c}">
+                <h1 data-th-text="${c.name}"></h1>
+                <br>
             <article data-th-each="r :${reccs}">
                 <h4 data-th-text="${r.name}"></h4>
-                <h5 data-th-text="${r.description}"></h5>
-                <p data-th-text="${r.currencyCode}"> <span data-th-text="${r.amount}"></span></p>
+                <p data-th-text="${r.description}"></p>
+                <h5 data-th-text="${r.currencyCode}"> <span data-th-text="${r.amount}"></span></h5>
                 <div>
                    <em>Booking Link Click <a data-th-href="${r.bookingLink}" target="_blank"><strong>Here</strong></a></em> 
                 </div>
@@ -51,7 +30,6 @@
                 </div>
             </article>
         </div>
-    </div>
         <button th:href="@{/planner/list}" class="btn btn-warning">Go to Planner Home Page</button>
 </body>
 </html>

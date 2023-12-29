@@ -8,46 +8,49 @@
 
     <title>Planner Page_UPDATE PAGE</title>
 </head>
-<body>
+<body style="background-image: url('https://cdn.dribbble.com/users/1794903/screenshots/4074992/media/9788994bffde678fd14d5e34332c5eb7.gif');  background-repeat: no-repeat;  background-attachment: fixed;
+   background-size: 100% 40%;">
     <div class="container">
         <br>
-        <a th:href="@{/planner/list}" class="btn btn-primary">Back to Planner Home Page</a>
+        <a th:href="@{/planner}" class="btn btn-primary">Back to Planner Home Page</a>
         <br><br>
-        <h1>Update Itinerary List</h1>
+        <h1 style="color:darkblue ;">Adding Itinerary List</h1>
         <hr>
-        <form method="POST" th:action="@{/planner/updateplanner}" th:object="${itineraries}">
+        <form method="POST" th:action="@{/planner/update}" th:object="${itineraries}" >
+
+            <input type="hidden" th:field="*{id}"/>
+
             <div class="mb-3">
-                <label for="day" class="form-label">Day: </label>
-                <input type="number" class="form-control" name="day" th:field="*{day}" />
+                <label for="day" class="form-label" style="color:darkblue ;">Day: </label>
+                <input type="number" class="form-control" name="day" th:field="*{day}"  />
             </div>
             <div class="alert alert-danger" th:if="${#fields.hasErrors('day')}" th:errors="*{day}"></div>
 
             <div class="mb-3">
-                <label for="date" class="form-label">Date: </label>
+                <label for="date" class="form-label" style="color:darkblue ;">Date: </label>
                 <input type="date" class="form-control" name="date" th:field="*{date}" />
             </div>
             <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
 
             <div class="mb-3">
-                <label for="location" class="form-label">Location: </label>
-                <input type="text" class="form-control" name="location" th:field="*{location}" />
+                <label for="location" class="form-label" style="color:darkblue ;">Location: </label>
+                <input type="text" class="form-control" name="location" th:field="*{location}" th:placeholder="#{itineraryPlaceholder.location}"/>
             </div>
             <div class="alert alert-danger" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
 
             <div class="mb-3">
-                <label for="activity" class="form-label">Activities: </label>
-                <input type="text" class="form-control" name="activity" th:field="*{activity}" />
+                <label for="activity" class="form-label" style="color:darkblue ;">Activities: </label><br>
+                <textarea rows="6" cols="175" style="font-family:sans-serif;font-size:1.2em;" name="activity" th:field="*{activity}" ></textarea>
             </div>
             <div class="alert alert-danger" th:if="${#fields.hasErrors('activity')}" th:errors="*{activity}"></div>
 
             <div class="mb-3">
-                <label for="remarks" class="form-label">Remarks: </label>
-                <input type="text" class="form-control" name="remarks" th:field="*{remarks}" />
+                <label for="remarks" class="form-label" style="color:darkblue ;">Remarks: </label>
+                <br>
+                <textarea rows="10" cols="175" style="font-family:sans-serif;font-size:1.2em;" name="remarks" th:field="*{remarks}" ></textarea>
             </div>
-            <div class="alert alert-danger" th:if="${#fields.hasErrors('remarks')}" th:errors="*{remarks}"></div>
-
         
-            <button type="submit" class="btn btn-primary">Update List</button>
+            <button type="submit" class="btn btn-primary">Add to List</button>
         </form>
 
     </div>

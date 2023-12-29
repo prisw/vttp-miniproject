@@ -1,21 +1,135 @@
 package ssf.vttp.miniproject.repository;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
-
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import jakarta.servlet.http.HttpSession;
 import ssf.vttp.miniproject.models.Itinerary;
 
-@Repository
+@Repository 
 public class PlannerRepository {
 
-    private List<Itinerary> itineraries;
+    private static List<Itinerary> itineraries;
+    public static final String ATTR_ITIN ="itinerary";
+    public static final Integer F_DAY = 0;
+    public static final Integer F_DATE = 1;
+    public static final Integer F_LOCATION = 2;
+    public static final Integer F_ACTIVTIY = 3;
+    public static final Integer F_REMARKS = 4;
+
+    @Autowired @Qualifier("REDIS")
+    private RedisTemplate<String,Object> template;
+
+
+    public static List<Itinerary> getItineraries(HttpSession session) {
+        itineraries = (List<Itinerary>)session.getAttribute(ATTR_ITIN);
+        if(null== itineraries){
+            itineraries = new LinkedList<>();
+            session.setAttribute(ATTR_ITIN, itineraries);
+        } return itineraries;
+    }
+
+    public boolean hasItinerary(String name) {
+        return template.hasKey(name);
+    }
+
+    public void addItinerary(String name, Itinerary itinerary) {
+        HashOperations<String,String,Object> map = template.opsForHash();
+        System.out.println("saving to redis");
+        map.put(name,itinerary.getId(), itinerary);
+        System.out.println("done");
+    }
+
+    public List<Itinerary> getItineraries(String name) {
+        HashOperations<String,String,Object> map = template.opsForHash();
+        List<Itinerary> itineraries = new LinkedList<>();
+
+        
+        Set keyset= map.keys(name);
+        for(Object o: keyset){
+            Itinerary itinerary = (Itinerary) map.get(name,o.toString());
+            itineraries.add(itinerary);
+        }
+        return itineraries;
+    }
+
+
+    public Itinerary getOneItinerary(String name, String id){
+        HashOperations<String, String, Object> map = template.opsForHash();
+        return (Itinerary)map.get(name, id);
+    }
+
+    public List<Itinerary> getAllItineraries (String name) {
+        HashOperations<String,Object,Object> map = template.opsForHash();
+        Set<Object> keyset = map.keys(name);
+
+        List<Itinerary> itineraries = new LinkedList<>();
+        for (Object o: keyset){
+            Itinerary itinerary = (Itinerary) map.get(name, o.toString());
+            itineraries.add(itinerary);
+        } return itineraries;
+    }
+
+    public void deleteItinerary(String name, String id) {
+        HashOperations<String,Object,Object> map = template.opsForHash();
+        map.delete(name, id);
+    }
+
+        // Set<Object> keyset = map.keys(name);
+
+        // List<Itinerary> itineraries = new LinkedList<>();
+        // Set<Object> delete = new HashSet<>();
+
+        // for (Object o : keyset){
+        //     Itinerary itinerary = (Itinerary) map.get(name, o.toString());
+
+        //     if(itinerary.getLocation().equals(location)) {
+        //         delete.add(o);
+        //     }
+        // }
+
+        // for(Object o:delete){
+        //     map.delete(name,o.toString());
+        // }
+
+    
+
+
+    public void updateItinerary(Itinerary itinerary, String name) {
+        HashOperations<String,Object,Object> map = template.opsForHash();
+
+        List<Itinerary> itineraries = new LinkedList<>();
+        map.put(name,itinerary.getId(), itinerary);
+    }
+
+
+    public List<Itinerary> allItineraries(String name){
+        HashOperations<String,Object,Object> map = template.opsForHash();
+
+        List<Itinerary> itineraries = new LinkedList<>();
+
+        List<Object> rawList = map.values(name);
+        for(Object o : rawList){
+            Itinerary itinerary = (Itinerary)o;
+            itineraries.add(itinerary);
+        }
+        return itineraries;
+    }
+
+
 
      public Stream<Entry<String, String>> getCityCodes() {
 
@@ -46,7 +160,6 @@ public class PlannerRepository {
         cityCodes.put("CWL", "Cardiff, United Kingdom");
 
         //Germany
-        cityCodes.put("TXL", "Berlin Tegel, Germany");
         cityCodes.put("FRA", "Frankfurt, Germany");
         cityCodes.put("MUC", "Munich, Germany");
         cityCodes.put("HAM", "Hamburg, Germany");
@@ -56,6 +169,7 @@ public class PlannerRepository {
         cityCodes.put("LEJ", "Leipzig, Germany");
         cityCodes.put("NUE", "Nuremberg, Germany");
         cityCodes.put("HAJ", "Hanover, Germany");
+        // cityCodes.put("TXL", "Berlin Tegel, Germany");
 
         //Italy
         cityCodes.put("FCO", "Rome Fiumicino, Italy");
@@ -138,53 +252,5 @@ public class PlannerRepository {
         return sortedMap;
 
         }
-
-
-        public List<Itinerary> findAll() {
-            return itineraries;
-        }
-
-        public Boolean delete(Itinerary itinerary) {
-            Boolean result = false;
-            int itineraryIndex = itineraries.indexOf(itinerary);
-
-            if (itineraryIndex >= 0){
-                itineraries.remove(itineraryIndex);
-                result = true;
-            } 
-            return result;
-        }
-
-        public Itinerary findByLocation(String location) {
-            return itineraries.stream()
-            .filter(i -> i.getLocation().equals(location))
-            .findFirst()
-            .get();
-        }
-
-        public Boolean updateItinerary(Itinerary itinerary) {
-            Boolean result = false;
-
-            Itinerary itinObj = itineraries.stream()
-            .filter(i -> i.getLocation().equals(itinerary.getLocation()))
-            .findFirst()
-            .get();
-
-            int itineraryIndex = itineraries.indexOf(itinObj);
-
-            if(itineraryIndex >=0) {
-                itineraries.get(itineraryIndex).setDay(itinerary.getDay());
-                itineraries.get(itineraryIndex).setDate(itinerary.getDate());
-                itineraries.get(itineraryIndex).setLocation(itinerary.getLocation());
-                itineraries.get(itineraryIndex).setActivity(itinerary.getActivity());
-                itineraries.get(itineraryIndex).setRemarks(itinerary.getRemarks());
-
-                result = true;
-            }
-            return result;
-
-        }
-
-
     
 }

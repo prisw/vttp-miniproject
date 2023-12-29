@@ -11,19 +11,20 @@
     <title>Planner Home Page</title>
 </head>
 
-<body>
-
-    <h1>Planner Home Page</h1>
-    <br><hr>
+<body style="background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/hd/25905953868945.5943e830d4be9.gif');  background-repeat: no-repeat;  background-attachment: fixed;
+   background-size: 100% 40%;">
     <br>
-    <h3>Welcome <span data-th-value="${username}"></span></h2>
+    <h1 style="color:darkblue ;"><center>Welcome to Planner Home Page</center></h1>
+    <hr>
     <br><br>
-
     <div class="container">
+        <br><br><br>
         <a th:href="@{/planner/addnew}" class="btn btn-primary">Create New Itinerary</a>
-        <br><br>
+        <a th:href="@{/home.html}" class="btn btn-info">Travelling Suggestions</a>
 
-        <table class="table table-striped">
+        <input type="hidden" name="name" data-th-value="${name}">
+
+        <table class="table table-striped" style="color:darkblue ;">
             <thead>
                 <tr>
                     <th>Day</th>
@@ -37,17 +38,18 @@
             <tbody>
                 <tr data-th-each="itin: ${itineraries}">
                     <td data-th-text="*{itin.day}"></td>
-                    <td data-th-text="*{itin.date}"></td>
+                    <td data-th-text="${#dates.format(itin.date, 'MMM dd yyyy')}"></td>
                     <td data-th-text="*{itin.location}"></td>
                     <td data-th-text="*{itin.activity}"></td>
                     <td data-th-text="*{itin.remarks}"></td>
                     <td>
-                        <a th:href="@{/planner/plannerupdate/{location}(location=${itin.location})}" class="btn btn-secondary">Update</a>
-                        <a th:href="@{/planner/plannerupdate/{location}(location=${itin.location})}" class="btn btn-danger">Delete</a>
+                        <a th:href="@{/planner/update/{id}(id=${itin.id})}" class="btn btn-secondary">Update</a>
+                        <a th:href="@{/planner/delete/{id}(id=${itin.id})}" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <a th:href="@{'/index?name=' + ${name}}" class="btn btn-warning">Back to User Page</a>
     </div>
 </body>
     
