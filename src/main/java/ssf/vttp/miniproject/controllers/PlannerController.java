@@ -7,23 +7,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.amadeus.exceptions.ResponseException;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import ssf.vttp.miniproject.models.City;
 import ssf.vttp.miniproject.models.Itinerary;
 import ssf.vttp.miniproject.repository.PlannerRepository;
 import ssf.vttp.miniproject.service.PlannerService;
@@ -56,7 +49,7 @@ public class PlannerController {
         session.setAttribute(planRepo.ATTR_ITIN, itineraries);
 
         session.setAttribute("name", name);
-        
+        System.out.println(name);
 
         model.addAttribute("itineraries",itineraries);
         model.addAttribute("name", name);
@@ -94,7 +87,7 @@ public class PlannerController {
         System.out.printf("itinerary: %s\n", itinerary);
         System.out.printf("error: %b\n", bindings.hasErrors());
 
-        List<Itinerary> itineraries = planRepo.getItineraries(session);
+        List<Itinerary> itineraries = PlannerRepository.getItineraries(session);        
         itineraries.add(itinerary);
 
         session.setAttribute("itineraries", itineraries);
@@ -148,19 +141,21 @@ public class PlannerController {
 }
 
 
-@GetMapping(path="/index/new")
-public String exitPlannerPage(@RequestParam String name,HttpSession session, Model model) {
+@GetMapping(path="/exit")
+public String exitPlannerPage(HttpSession session, Model model) {
 
-    name = session.getAttribute("name").toString();
-    
-    List<Itinerary> itinerary = PlannerRepository.getItineraries(session);
-    System.out.printf("Exit this planner page: %s\n", itinerary);
+    String nameObj= (String)session.getAttribute("name").toString();
 
-    planSvc.save(name,(Itinerary) itinerary);
-    model.addAttribute("name", name);
-   
+    if (nameObj != null) {
+        String name = nameObj;
+        List<Itinerary> itineraries = PlannerRepository.getItineraries(session);
+        for (Itinerary itinerary: itineraries){
+              System.out.printf("Exit this planner page: %s\n", itinerary);
+            planSvc.save(name,itinerary);
+            }  model.addAttribute("name", name);
+    } 
     session.invalidate();
-    return "redirect:/index";
+    return "redirect:/";
 }
 
 }

@@ -12,24 +12,29 @@
     </h2>
     <hr style="color:darkblue ;">
     <div>
-        <button class="btn btn-info" data-th-href="@{/home}">Back</button>
+        <input type="hidden" name="name" data-th-value="${name}"> 
+
+        <button class="btn btn-info" onclick="window.location.href='/home.html'">Back</button>
     </div>
  <br>
-            <div data-th-each="c :${cities}" data-th-object="${c}">
-                <h1 data-th-text="${c.name}"></h1>
+            <div data-th-each="c :${cities}" data-th-limit="5" data-th-object="${c}">
+                <h1 data-th-text="*{name}"></h1>
                 <br>
-            <article data-th-each="r :${reccs}">
-                <h4 data-th-text="${r.name}"></h4>
-                <p data-th-text="${r.description}"></p>
-                <h5 data-th-text="${r.currencyCode}"> <span data-th-text="${r.amount}"></span></h5>
+            <article data-th-each="r : *{recommendations}" data-th-limit="5" data-th-object="${r}">
+                <h4 data-th-text="*{name}"></h4>
+                <p data-th-text="*{description}"></p>
+                <h5 data-th-text="*{currencyCode}"></span></h5>
                 <div>
-                   <em>Booking Link Click <a data-th-href="${r.bookingLink}" target="_blank"><strong>Here</strong></a></em> 
+                   <em>Booking Link Click <a data-th-href="*{bookingLink}" target="_blank"><strong>Here</strong></a></em> 
                 </div>
                 <div>
-                    <img data-th-src="${r.pictures}" width="250px">
+                    <img data-th-src="*{pictures}" width="250px">
                 </div>
             </article>
+
+            <!--<button data-th-each="itin: ${itinerary}" th:href="@{/planner/update/{id}(id=${itin.id})}" class="btn btn-warning">Go to Planner Home Page</button>
+            <span data-th-text="${r.amount}"> -->
         </div>
-        <button th:href="@{/planner/list}" class="btn btn-warning">Go to Planner Home Page</button>
+        <button onclick="window.location.href='/toplanner'" class="btn btn-warning">Go to Planner Home Page</button>
 </body>
 </html>

@@ -15,9 +15,8 @@
         <input type="hidden" name="name" data-th-value="${name}"> 
 
         <p style="color:darkblue ;">You have successfully created a new Itinerary List</p>
-        <ul data-th-each="itinerary : ${itineraries}">
-        <p data-th-text="${itinerary.location}" style="color:darkblue ;" ><strong></strong></p>
-        </ul>
+        <p data-th-text="${itineraries[itineraries.size() - 1].location}" style="color:darkblue ;"><strong></strong></p>
+       
         
         <a th:href="@{/planner/success}" class="btn btn-primary">Return back to Itinerary Home Page</a>
     </div>

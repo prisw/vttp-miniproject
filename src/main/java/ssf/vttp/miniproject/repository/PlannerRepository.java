@@ -1,7 +1,6 @@
 package ssf.vttp.miniproject.repository;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +38,8 @@ public class PlannerRepository {
             itineraries = new LinkedList<>();
             session.setAttribute(ATTR_ITIN, itineraries);
         } return itineraries;
+
+      
     }
 
     public boolean hasItinerary(String name) {
@@ -49,6 +49,7 @@ public class PlannerRepository {
     public void addItinerary(String name, Itinerary itinerary) {
         HashOperations<String,String,Object> map = template.opsForHash();
         System.out.println("saving to redis");
+        
         map.put(name,itinerary.getId(), itinerary);
         System.out.println("done");
     }
@@ -88,25 +89,6 @@ public class PlannerRepository {
         map.delete(name, id);
     }
 
-        // Set<Object> keyset = map.keys(name);
-
-        // List<Itinerary> itineraries = new LinkedList<>();
-        // Set<Object> delete = new HashSet<>();
-
-        // for (Object o : keyset){
-        //     Itinerary itinerary = (Itinerary) map.get(name, o.toString());
-
-        //     if(itinerary.getLocation().equals(location)) {
-        //         delete.add(o);
-        //     }
-        // }
-
-        // for(Object o:delete){
-        //     map.delete(name,o.toString());
-        // }
-
-    
-
 
     public void updateItinerary(Itinerary itinerary, String name) {
         HashOperations<String,Object,Object> map = template.opsForHash();
@@ -131,7 +113,7 @@ public class PlannerRepository {
 
 
 
-     public Stream<Entry<String, String>> getCityCodes() {
+     public Map<String, String> getCityCodes() {
 
         Map<String,String> cityCodes = new HashMap<>();
         
@@ -244,13 +226,16 @@ public class PlannerRepository {
         cityCodes.put("DMM", "Dammam King Fahd, Saudi Arabia");
         cityCodes.put("MED", "Medina Prince Mohammad bin Abdulaziz, Saudi Arabia");
 
+        return cityCodes;
+ }
 
-        Stream<Entry<String, String>> sortedMap = cityCodes.entrySet()
-        .stream()
-        .sorted(Map.Entry.comparingByValue());
+          public Stream<Entry<String, String>> SortedCityCodes(Map<String,String> cityCodes) {
+            Stream<Entry<String, String>> sortedMap = cityCodes.entrySet()
+             .stream()
+             .sorted(Map.Entry.comparingByValue());
 
-        return sortedMap;
-
-        }
+            
+            return sortedMap;
+  }
     
 }
